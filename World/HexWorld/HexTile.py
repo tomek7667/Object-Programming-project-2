@@ -20,9 +20,8 @@ class HexTile(pg.sprite.Sprite):
         # self.layer = 0
 
     def __str__(self):
-        return f"HexTile Object with org=[{self.org}] inside, at {self.pos}\n"
+        return f"HexTile Object with org=[{self.org}] inside, at {self.pos}"
 
-    @cache
     def make_tile(self):
         h = self.height
         points = [8, 4], [45, 0], [64, 10], [57, 27], [20, 31], [0, 22]
@@ -38,7 +37,6 @@ class HexTile(pg.sprite.Sprite):
         pg.draw.lines(image, pg.Color("black"), 0, bottom[2:], 2)
         return image
 
-    @cache
     def make_mask(self):
         points = (8, 4), (45, 0), (64, 10), (57, 27), (20, 31), (0, 22)
         temp_image = pg.Surface(self.image.get_size()).convert_alpha()

@@ -52,12 +52,12 @@ class Animal(Organism):
                 return [[f"Attempt breeding {attacker.name} failed."], "", fight]
         if attacker.strength > self.strength:  # todo: general fight
             mapping.cells[self.pos.y][self.pos.x].clear()
-
             mapping.cells[self.pos.y][self.pos.x].org = attacker
             self.alive = False
-        return [[f"Fight between: {attacker.name} => {self.name}",
-                 f"{15*' '}{attacker.strength}{(len(attacker.name)-len(str(attacker.strength)))*' '} => {self.strength}"],
-                "",
-                fight]
+        return [[
+            f"Fight between: {attacker.name} => {self.name}",
+            f"{15*' '}{attacker.strength}{(len(attacker.name)-len(str(attacker.strength)))*' '} => {self.strength}"],
+            "",
+            fight]
 
         # return attacker.strength < self.strength
