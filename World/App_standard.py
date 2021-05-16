@@ -248,6 +248,7 @@ class AppStandard(object):
                                                                            )
                             self.cursor.mapping = self.mapping
                             self.cursor.update_label(cell)
+                            self.cursor.update_label(old_position)
                     else:  # Fight
                         for announcement in cell[0]:
                             self.reporter.add_event(announcement)
