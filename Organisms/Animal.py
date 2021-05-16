@@ -33,7 +33,8 @@ class Animal(Organism):
                     self.pos.y += 1
                     return True
 
-    def collision(self, attacker, old_pos, mapping):
+    def collision(self, attacker, old_pos, *mapping):
+        mapping = mapping[0]
         fight = True
         if self.name == attacker.name:
             fight = False

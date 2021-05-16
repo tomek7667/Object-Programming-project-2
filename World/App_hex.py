@@ -204,15 +204,16 @@ class AppHex(object):
             self.clock.tick(FPS)
 
     def next_turn(self, key):
-        print("ROUND")
         # player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(
         # i).org_name == "Player"][0]
+        print("New Round")
         organism_cells = []
         for i in range(len(self.tiles)):
             if self.tiles.get_sprite(i).org_name != "null":
                 organism_cells.append(self.tiles.get_sprite(i))
         organism_cells.sort(key=lambda t: (t.org.initiative, t.org.age), reverse=True)
         for i in organism_cells:
+            print(i)
             if i.org.alive:
                 old_position = Position(i.org.pos.x, i.org.pos.y)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
@@ -221,10 +222,9 @@ class AppHex(object):
                 x = i.org.pos.x
                 if self.capture_movement:
                     self.reporter.add_event(f"{i.org.name} from {old_position} to {Position(x, y)}")
+                print(f"{i.org.name} from {old_position} to {Position(x, y)}")
                 if not self.mapping.cells[y][x].empty():
                     cell = self.mapping.cells[y][x].org.collision(i.org, old_position, self.mapping)
-                    print(cell)
-                    print(f"{i.org.name} from {old_position} to {Position(x, y)}")
                     if not self.mapping.cells[y][x].empty() and not cell[2]:  # Breed
                         for announcement in cell[0]:
                             self.reporter.add_event(announcement)

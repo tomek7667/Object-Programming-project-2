@@ -228,34 +228,34 @@ class AppStandard(object):
                 i.org.action(key, self.mapping)
                 y = i.org.pos.y
                 x = i.org.pos.x
+                if self.capture_movement:
+                    self.reporter.add_event(f"{i.org.name} from {old_position} to {Position(x, y)}")
                 if not self.mapping.cells[y][x].empty():
-                    cell = self.mapping.cells[y][x].org.collision(i.org, old_position, self.mapping)
-                    if self.mapping.cells[y][x].org != "null" and not cell[2]:  # Breed
-                        # i.org.pos = old_position
-                        # self.mapping.cells[old_position.y][old_position.x].org = i.org
-                        for announcement in cell[0]:
-                            self.reporter.add_event(announcement)
-                        if type(cell[1]) == Position:
-                            cell = cell[1]
-                            klass = globals()[i.org.name]
-                            child = [o for o in ORGANISM if o[0] == i.org.name][0]
-                            self.mapping.cells[cell.y][cell.x].org = klass(child[0],
-                                                                           child[2],
-                                                                           child[3],
-                                                                           cell,
-                                                                           child[1],
-                                                                           self.mapping.new_id()
-                                                                           )
-                            self.cursor.mapping = self.mapping
-                            self.cursor.update_label(cell)
-                            self.cursor.update_label(old_position)
-                    else:  # Fight
-                        for announcement in cell[0]:
-                            self.reporter.add_event(announcement)
-                        if self.capture_movement:
-                            self.reporter.add_event(f"{i.org.name} from {old_position} to {Position(x, y)}")
-                        # self.cursor.update_label(Position(x, y))
-                        # self.cursor.update_label(old_position)
+                        cell = self.mapping.cells[y][x].org.collision(i.org, old_position, self.mapping)
+                        if self.mapping.cells[y][x].org != "null" and not cell[2]:  # Breed
+                            # i.org.pos = old_position
+                            # self.mapping.cells[old_position.y][old_position.x].org = i.org
+                            for announcement in cell[0]:
+                                self.reporter.add_event(announcement)
+                            if type(cell[1]) == Position:
+                                cell = cell[1]
+                                klass = globals()[i.org.name]
+                                child = [o for o in ORGANISM if o[0] == i.org.name][0]
+                                self.mapping.cells[cell.y][cell.x].org = klass(child[0],
+                                                                               child[2],
+                                                                               child[3],
+                                                                               cell,
+                                                                               child[1],
+                                                                               self.mapping.new_id()
+                                                                               )
+                                self.cursor.mapping = self.mapping
+                                self.cursor.update_label(cell)
+                                self.cursor.update_label(old_position)
+                        else:  # Fight
+                            for announcement in cell[0]:
+                                self.reporter.add_event(announcement)
+                            # self.cursor.update_label(Position(x, y))
+                            # self.cursor.update_label(old_position)
                 else:
                     self.mapping.cells[y][x].org = i.org
                     self.cursor.mapping = self.mapping

@@ -13,6 +13,16 @@ class MapGen(object):
         self.ids_on_map = []
         self.cells = self.import_map()
 
+    def __str__(self):
+        result = f"MapGenObject, map type: {self.map_type}, Save: {self.file}\n"
+        result += f"Seed: {self.seed}, Cells:\n"
+        for row in self.cells:
+            for column in row:
+                result += str(column)
+                result += " "
+            result += "\n"
+        return result
+
     def import_map(self):
         cells = []
         lines = []
