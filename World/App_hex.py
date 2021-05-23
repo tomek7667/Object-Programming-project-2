@@ -15,11 +15,12 @@ class AppHex(object):
         self.screen_rect = self.screen.get_rect()
         self.clock = pg.time.Clock()
         self.done = False
-        self.tiles = None  # self.make_map()
+        self.tiles = None
         self.font = FONT
         self.cursor = None
         self.reporter = Reporter(self.screen)
         self.file_handler = FileHandler()
+        self.organisms = {}
 
     def make_map(self):
         tiles = pg.sprite.LayeredUpdates()
@@ -205,6 +206,21 @@ class AppHex(object):
             self.render()
             self.clock.tick(FPS)
 
+    def organism_get_key(self, org, orgs):
+        for i in range(len(orgs)):
+            if org.id == orgs[i].org.id:
+                return i
+        print("This should never happen!")
+
+    def check_player(self, tried=0):
+        player = []
+        for asd in self.mapping.cells:
+            player.append([True for jd in asd if jd.org != "null" and jd.org.name == "Player"])
+        if [True] in player:
+            print(f"\t\tjest gracz {tried}")
+        else:
+            print(f"\t\tni ma gracza {tried}")
+
     def next_turn(self, key):
         # player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(
         # i).org_name == "Player"][0]
@@ -215,24 +231,25 @@ class AppHex(object):
                 organism_cells.append(self.tiles.get_sprite(i))
         organism_cells.sort(key=lambda t: (t.org.initiative, t.org.age), reverse=True)
         for i in organism_cells:
-            print(organism_cells[0])
             if i.org.alive:
                 old_position = Position(i.org.pos.x, i.org.pos.y)
+                # tu jest blad na 82%
+                print("esse trzymam:\t\t\t", i.org)
+                print("a dokladniej:\t\t\t", self.mapping.cells[i.org.pos.y][i.org.pos.x].org)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
                 moved = i.org.action(key, self.mapping)
                 if moved:
                     y = i.org.pos.y
                     x = i.org.pos.x
                     if self.capture_movement:
-                        self.reporter.add_event(f"{i.org.name} from {old_position} to {Position(x, y)}")
-                    print(f"{i.org.name} from {old_position} to {Position(x, y)}")
+                        self.reporter.add_event(f"{i.org.id}: {i.org.name} from {old_position} to {Position(x, y)}")
                     if not self.mapping.cells[y][x].empty():
                         cell = self.mapping.cells[y][x].org.collision(i.org, old_position, self.mapping)
-                        if not self.mapping.cells[y][x].empty() and not cell[2] and i.org.name != "Player":  # Breed
-                            for announcement in cell[0]:
+                        if (type(cell[0]) == Position or len(cell) == 1) and i.org.name != "Player":  # Breed
+                            for announcement in cell[-1]:
                                 self.reporter.add_event(announcement)
-                            if type(cell[1]) == Position:
-                                cell = cell[1]
+                            if type(cell[0]) == Position:
+                                cell = cell[0]
                                 klass = globals()[i.org.name]
                                 child = [o for o in ORGANISM if o[0] == i.org.name][0]
                                 self.mapping.cells[cell.y][cell.x].org = klass(child[0],
@@ -242,12 +259,24 @@ class AppHex(object):
                                                                                child[1],
                                                                                self.mapping.new_id()
                                                                                )
+                                i.org.pos = old_position
+                                self.mapping.cells[old_position.y][old_position.x].org = i.org
                                 self.cursor.mapping = self.mapping
                                 self.cursor.update_label(cell)
                                 self.cursor.update_label(old_position)
                         else:  # Fight
-                            for announcement in cell[0]:
+                            for announcement in cell[-1]:
                                 self.reporter.add_event(announcement)
+                            rem = cell[0]
+                            if rem.name != self.mapping.cells[rem.pos.y][rem.pos.x].org.name:
+                                print(cell[1])
+                                self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
+                                organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
+                                print(cell[1])
+                                print("ZOSTAL USUNIETY:", organism_cells[self.organism_get_key(cell[1], organism_cells)].org)
+                            print("ZWARIUJE XDDdddddddddd:", cell[1])
+                            self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
+                            self.cursor.mapping = self.mapping
                             self.cursor.update_label(Position(x, y))
                             self.cursor.update_label(old_position)
                     else:
@@ -257,8 +286,6 @@ class AppHex(object):
                         self.cursor.update_label(old_position)
                 else:
                     self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
-        # player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(i).org_name == "Player"][0]
-        # print("jedennnn", player_cell)
+                print(i.org)
+                print(self)
         self.tiles = self.make_map()
-        # player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(i).org_name == "Player"][0]
-        # print("Dwaaaaaa", player_cell)
