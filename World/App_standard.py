@@ -213,52 +213,72 @@ class AppStandard(object):
                 self.cursor = SCursorHighlight(self.font, self.mapping, self.scale)
                 self.tiles = self.make_map()
 
+    def organism_get_key(self, org, orgs):
+        for i in range(len(orgs)):
+            if org.id == orgs[i].org.id:
+                return i
+        print("This should never happen!")
+
     def next_turn(self, key):
-        # player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(
-        # i).org_name == "Player"][0]
+        print("New Round")
         organism_cells = []
         for i in range(len(self.tiles)):
-            if self.tiles.get_sprite(i).org_name != "null":
+            if self.tiles.get_sprite(i).org_name != "null" and self.tiles.get_sprite(i).org.alive:
                 organism_cells.append(self.tiles.get_sprite(i))
         organism_cells.sort(key=lambda t: (t.org.initiative, t.org.age), reverse=True)
         for i in organism_cells:
-            if i.org.alive:
+            if i.org != "null" and i.org.alive:
+                print(len(organism_cells))
                 old_position = Position(i.org.pos.x, i.org.pos.y)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
-                i.org.action(key, self.mapping)
-                y = i.org.pos.y
-                x = i.org.pos.x
-                if self.capture_movement:
-                    self.reporter.add_event(f"{i.org.name} from {old_position} to {Position(x, y)}")
-                if not self.mapping.cells[y][x].empty():
-                    cell = self.mapping.cells[y][x].org.collision(i.org, old_position, self.mapping)
-                    if self.mapping.cells[y][x].org != "null" and not cell[2] and i.org.name != "Player":  # Breed
-                        # i.org.pos = old_position
-                        # self.mapping.cells[old_position.y][old_position.x].org = i.org
-                        for announcement in cell[0]:
-                            self.reporter.add_event(announcement)
-                        if type(cell[1]) == Position:
-                            cell = cell[1]
-                            klass = globals()[i.org.name]
-                            child = [o for o in ORGANISM if o[0] == i.org.name][0]
-                            self.mapping.cells[cell.y][cell.x].org = klass(child[0],
-                                                                           child[2],
-                                                                           child[3],
-                                                                           cell,
-                                                                           child[1],
-                                                                           self.mapping.new_id()
-                                                                           )
+                moved = i.org.action(key, self.mapping)
+                if moved:
+                    y = i.org.pos.y
+                    x = i.org.pos.x
+                    if self.capture_movement:
+                        self.reporter.add_event(f"{i.org.id}: {i.org.name} from {old_position} to {Position(x, y)}")
+                    if not self.mapping.cells[y][x].empty():
+                        cell = self.mapping.cells[y][x].org.collision(i.org, old_position, self.mapping)
+                        if (type(cell[0]) == Position or len(cell) == 1) and i.org.name != "Player":  # Breed
+                            for announcement in cell[-1]:
+                                self.reporter.add_event(announcement)
+                            if type(cell[0]) == Position:
+                                cell = cell[0]
+                                klass = globals()[i.org.name]
+                                child = [o for o in ORGANISM if o[0] == i.org.name][0]
+                                self.mapping.cells[cell.y][cell.x].org = klass(child[0],
+                                                                               child[2],
+                                                                               child[3],
+                                                                               cell,
+                                                                               child[1],
+                                                                               self.mapping.new_id()
+                                                                               )
+                            i.org.pos = old_position
+                            self.mapping.cells[old_position.y][old_position.x].org = i.org
                             self.cursor.mapping = self.mapping
-                            self.cursor.update_label(cell)
+                            self.cursor.update_label(Position(x, y))
                             self.cursor.update_label(old_position)
-                    else:  # Fight
-                        for announcement in cell[0]:
-                            self.reporter.add_event(announcement)
-                        # self.cursor.update_label(Position(x, y))
-                        # self.cursor.update_label(old_position)
+                        else:  # Fight
+                            for announcement in cell[-1]:
+                                self.reporter.add_event(announcement)
+                            rem = cell[0]
+                            if rem.name != self.mapping.cells[rem.pos.y][rem.pos.x].org.name:
+                                self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
+                                self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
+                                organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
+                                organism_cells[self.organism_get_key(cell[1], organism_cells)].org = "null"
+                            self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
+                            self.cursor.mapping = self.mapping
+                            self.cursor.update_label(Position(x, y))
+                            self.cursor.update_label(old_position)
+                    else:
+                        self.mapping.cells[y][x].org = i.org
+                        self.cursor.mapping = self.mapping
+                        self.cursor.update_label(Position(x, y))
+                        self.cursor.update_label(old_position)
                 else:
-                    self.mapping.cells[y][x].org = i.org
+                    self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
                     self.cursor.mapping = self.mapping
-                    self.cursor.update_label(Position(x, y))
+                    self.cursor.update_label(i.org.pos)
                     self.cursor.update_label(old_position)
         self.tiles = self.make_map()

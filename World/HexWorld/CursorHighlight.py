@@ -27,11 +27,9 @@ class CursorHighlight(pg.sprite.Sprite):
         content = ""
         if not self.mapping.cells[pos.y][pos.x].empty():
             content = self.mapping.cells[pos.y][pos.x].org.name
-            content += f" | S: {self.mapping.cells[pos.y][pos.x].org.strength}"
+            content += f" | ID: {self.mapping.cells[pos.y][pos.x].org.id}"
             content += f" | I: {self.mapping.cells[pos.y][pos.x].org.initiative}"
-            content += f" | A: {self.mapping.cells[pos.y][pos.x].org.age}"
-            content += f" | S: {self.mapping.cells[pos.y][pos.x].org.strength}"
-            content += f" | ID: {self.mapping.cells[pos.y][pos.x].org.id} | "
+            content += f" | A: {self.mapping.cells[pos.y][pos.x].org.age} | "
         name = f"{pos.x} {pos.y}"
         content += f"x={pos.x} y={pos.y}"
         self.label_dict[name] = outline_render(content, self.font, pg.Color("white"), 3)
@@ -43,11 +41,9 @@ class CursorHighlight(pg.sprite.Sprite):
                 content = ""
                 if not self.mapping.cells[y][x].empty():
                     content = self.mapping.cells[y][x].org.name
-                    content += f" | S: {self.mapping.cells[y][x].org.strength}"
+                    content += f" | ID: {self.mapping.cells[y][x].org.id}"
                     content += f" | I: {self.mapping.cells[y][x].org.initiative}"
-                    content += f" | A: {self.mapping.cells[y][x].org.age}"
-                    content += f" | S: {self.mapping.cells[y][x].org.strength}"
-                    content += f" | ID: {self.mapping.cells[y][x].org.id} | "
+                    content += f" | A: {self.mapping.cells[y][x].org.age} | "
                 name = f"{x} {y}"
                 content += f"x={x} y={y}"
                 labels[name] = outline_render(content, self.font, pg.Color("white"), 3)

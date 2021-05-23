@@ -227,15 +227,13 @@ class AppHex(object):
         print("New Round")
         organism_cells = []
         for i in range(len(self.tiles)):
-            if self.tiles.get_sprite(i).org_name != "null":
+            if self.tiles.get_sprite(i).org_name != "null" and self.tiles.get_sprite(i).org.alive:
                 organism_cells.append(self.tiles.get_sprite(i))
         organism_cells.sort(key=lambda t: (t.org.initiative, t.org.age), reverse=True)
         for i in organism_cells:
-            if i.org.alive:
+            if i.org != "null" and i.org.alive:
+                print(len(organism_cells))
                 old_position = Position(i.org.pos.x, i.org.pos.y)
-                # tu jest blad na 82%
-                print("esse trzymam:\t\t\t", i.org)
-                print("a dokladniej:\t\t\t", self.mapping.cells[i.org.pos.y][i.org.pos.x].org)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
                 moved = i.org.action(key, self.mapping)
                 if moved:
@@ -259,22 +257,20 @@ class AppHex(object):
                                                                                child[1],
                                                                                self.mapping.new_id()
                                                                                )
-                                i.org.pos = old_position
-                                self.mapping.cells[old_position.y][old_position.x].org = i.org
-                                self.cursor.mapping = self.mapping
-                                self.cursor.update_label(cell)
-                                self.cursor.update_label(old_position)
+                            i.org.pos = old_position
+                            self.mapping.cells[old_position.y][old_position.x].org = i.org
+                            self.cursor.mapping = self.mapping
+                            self.cursor.update_label(Position(x, y))
+                            self.cursor.update_label(old_position)
                         else:  # Fight
                             for announcement in cell[-1]:
                                 self.reporter.add_event(announcement)
                             rem = cell[0]
                             if rem.name != self.mapping.cells[rem.pos.y][rem.pos.x].org.name:
-                                print(cell[1])
                                 self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
+                                self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
                                 organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
-                                print(cell[1])
-                                print("ZOSTAL USUNIETY:", organism_cells[self.organism_get_key(cell[1], organism_cells)].org)
-                            print("ZWARIUJE XDDdddddddddd:", cell[1])
+                                organism_cells[self.organism_get_key(cell[1], organism_cells)].org = "null"
                             self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
                             self.cursor.mapping = self.mapping
                             self.cursor.update_label(Position(x, y))
@@ -286,6 +282,7 @@ class AppHex(object):
                         self.cursor.update_label(old_position)
                 else:
                     self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
-                print(i.org)
-                print(self)
+                    self.cursor.mapping = self.mapping
+                    self.cursor.update_label(i.org.pos)
+                    self.cursor.update_label(old_position)
         self.tiles = self.make_map()
