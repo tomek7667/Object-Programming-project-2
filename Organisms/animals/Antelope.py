@@ -1,35 +1,34 @@
 from Organisms.Animal import *
 
 
-class Turtle(Animal):
+class Antelope(Animal):
     def action(self, key, mapping):
-        if random.randint(0, 100) > 75:
-            directions = ["UP", "RIGHT", "LEFT", "DOWN"]
-            random.shuffle(directions)
-            while True:
-                if len(directions) == 0:
-                    return False
-                direction = directions.pop()
-                if direction == "LEFT":
-                    if self.pos.x-1 >= 0:
-                        # print("Poszedl w lewo")
-                        self.pos.x -= 1
-                        return True
-                if direction == "RIGHT":
-                    if self.pos.x+1 < get_width():
-                        # print("Poszedl w prawo")
-                        self.pos.x += 1
-                        return True
-                if direction == "UP":
-                    if self.pos.y-1 >= 0:
-                        # print("Poszedl w gore")
-                        self.pos.y -= 1
-                        return True
-                if direction == "DOWN":
-                    if self.pos.y+1 < get_height():
-                        # print("Poszedl w dol")
-                        self.pos.y += 1
-                        return True
+        directions = ["UP", "RIGHT", "LEFT", "DOWN"]
+        random.shuffle(directions)
+        while True:
+            if len(directions) == 0:
+                return False
+            direction = directions.pop()
+            if direction == "LEFT":
+                if self.pos.x-2 >= 0:
+                    # print("Poszedl w lewo")
+                    self.pos.x -= 2
+                    return True
+            if direction == "RIGHT":
+                if self.pos.x+2 < get_width():
+                    # print("Poszedl w prawo")
+                    self.pos.x += 2
+                    return True
+            if direction == "UP":
+                if self.pos.y-2 >= 0:
+                    # print("Poszedl w gore")
+                    self.pos.y -= 2
+                    return True
+            if direction == "DOWN":
+                if self.pos.y+2 < get_height():
+                    # print("Poszedl w dol")
+                    self.pos.y += 2
+                    return True
 
     def collision(self, attacker, old_pos, mapping):
         if self.name == attacker.name:
@@ -47,8 +46,9 @@ class Turtle(Animal):
             else:
                 return [[f"Attempt breeding {attacker.name} failed."]]
         result = []
-        if attacker.strength < 5:
-            return ["turtle reflection", [f"Turtle has reflected the attack of {attacker.name}!"]]
+        if random.randint(1, 2) == 1:
+            return ["Antelope runaway success", [f"Antelope has successfully escaped {attacker.name} attack!"]]
+            return ["Antelope runaway fail", [f"Antelope hasn't escaped {attacker.name} attack!"]]
         if attacker.strength >= self.strength:
             result.append(attacker)
             result.append(self)

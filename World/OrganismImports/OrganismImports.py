@@ -6,6 +6,7 @@ from Organisms.animals.Wolf import Wolf
 from Organisms.animals.Sheep import Sheep
 from Organisms.animals.Turtle import Turtle
 from Organisms.animals.Fox import Fox
+from Organisms.animals.Antelope import Antelope
 
 # plants
 from Organisms.Plant import Plant
