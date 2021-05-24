@@ -47,8 +47,14 @@ class Antelope(Animal):
                 return [[f"Attempt breeding {attacker.name} failed."]]
         result = []
         if random.randint(1, 2) == 1:
-            return ["Antelope runaway success", [f"Antelope has successfully escaped {attacker.name} attack!"]]
-            return ["Antelope runaway fail", [f"Antelope hasn't escaped {attacker.name} attack!"]]
+            if mapping.map_type == "AppHex":
+                possibles = Position.hex_get_adjacent(self.pos)
+            if mapping.map_type == "AppStandard":
+                possibles = Position.get_adjacent(self.pos)
+            for p in possibles:
+                if mapping.cells[p.y][p.x].org == "null":
+                    self.pos = p
+                    return ["Antelope runaway success", p, [f"Antelope has successfully escaped {attacker.name} attack!"]]
         if attacker.strength >= self.strength:
             result.append(attacker)
             result.append(self)

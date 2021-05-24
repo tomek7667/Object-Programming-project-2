@@ -268,9 +268,12 @@ class AppHex(object):
                                 if rem == "turtle reflection":
                                     i.org.pos = old_position
                                     self.mapping.cells[old_position.y][old_position.x].org = i.org
+                                elif rem == "Antelope runaway success":
+                                    self.mapping.cells[cell[1].y][cell[1].x].org = self.mapping.cells[i.org.pos.y][i.org.pos.x].org
+                                    self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
+                                    self.cursor.update_label(cell[1])
+                                    pass
                                 else:
-                                    print(f"aaaaaaaax={x} y={y}")
-                                    print(self.mapping.cells[y][x].empty())
                                     if not isinstance(rem, type(self.mapping.cells[rem.pos.y][rem.pos.x].org)):
                                         self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
                                         self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
@@ -335,5 +338,4 @@ class AppHex(object):
                     self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
                     self.cursor.mapping = self.mapping
                     self.cursor.update_label(Position(i.org.pos.x, i.org.pos.y))
-
         self.tiles = self.make_map()
