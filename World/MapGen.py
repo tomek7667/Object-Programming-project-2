@@ -1,9 +1,5 @@
 from World.outline_render import *
-from Organisms.Player import Player
-from Organisms.Animal import Animal
-from Organisms.animals.Sheep import Sheep
-from Organisms.animals.Wolf import Wolf
-
+from World.OrganismImports.OrganismImports import *
 
 class MapGen(object):
     def __init__(self, file, map_type):

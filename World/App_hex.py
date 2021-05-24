@@ -25,8 +25,8 @@ class AppHex(object):
     def make_map(self):
         tiles = pg.sprite.LayeredUpdates()
         start_x, start_y = self.screen_rect.midtop
-        start_x -= 100 - 1/get_width()  # * 7 / get_width()  # TODO: Tutaj bylo to do naprawienia
-        start_y += 300 - 1/get_height()  # * 7 / get_height()
+        start_x -= 100 - 1 / get_width()  # * 7 / get_width()  # TODO: Tutaj bylo to do naprawienia
+        start_y += 300 - 1 / get_height()  # * 7 / get_height()
         row_offset = -45, 22
         col_offset = 57, 5
         for y in range(get_height()):
@@ -151,7 +151,8 @@ class AppHex(object):
              sg.Button('Cancel'),
              sg.Button('New World')]]
                                   ).read(close=True)
-        if event == "Ok" and len(values["chosen_save"]) == 1 and len(values) != 0 and len(options) != 0 and options[0] != "":
+        if event == "Ok" and len(values["chosen_save"]) == 1 and len(values) != 0 and len(options) != 0 and options[
+            0] != "":
             self.mapping = MapGen(values["chosen_save"][0], self.mode)
             self.cursor = CursorHighlight(self.font, self.mapping)
             self.tiles = self.make_map()
@@ -182,7 +183,8 @@ class AppHex(object):
                 if event.key == pg.K_l:
                     self.open_menu()
                 if event.key == pg.K_c:
-                    player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(i).org_name == "Player"][0]
+                    player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if
+                                   self.tiles.get_sprite(i).org_name == "Player"][0]
                     print(player_cell)
                     self.capture_movement = not self.capture_movement
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -223,7 +225,6 @@ class AppHex(object):
         organism_cells.sort(key=lambda t: (t.org.initiative, t.org.age), reverse=True)
         for i in organism_cells:
             if i.org != "null" and i.org.alive:
-                print(len(organism_cells))
                 old_position = Position(i.org.pos.x, i.org.pos.y)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
                 moved = i.org.action(key, self.mapping)
@@ -257,15 +258,21 @@ class AppHex(object):
                             for announcement in cell[-1]:
                                 self.reporter.add_event(announcement)
                             rem = cell[0]
-                            if rem.name != self.mapping.cells[rem.pos.y][rem.pos.x].org.name:
+                            if not isinstance(rem, type(self.mapping.cells[rem.pos.y][rem.pos.x].org)):
                                 self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
                                 self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
                                 organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
                                 organism_cells[self.organism_get_key(cell[1], organism_cells)].org = "null"
-                            self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
+                            if issubclass(type(rem), Plant):  # case for plants
+                                self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
+                                organism_cells[self.organism_get_key(rem, organism_cells)].org.alive = False
+                                organism_cells[self.organism_get_key(rem, organism_cells)].org = "null"
+                            else:
+                                self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
                             self.cursor.mapping = self.mapping
                             self.cursor.update_label(Position(x, y))
                             self.cursor.update_label(old_position)
+
                     else:
                         self.mapping.cells[y][x].org = i.org
                         self.cursor.mapping = self.mapping
