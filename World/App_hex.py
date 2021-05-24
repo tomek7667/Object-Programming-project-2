@@ -300,6 +300,7 @@ class AppHex(object):
                         self.cursor.update_label(i.org.pos)
                         self.cursor.update_label(old_position)
                 elif issubclass(type(i.org), Plant):
+                    print(f"wat {i.org},\n{moved}")
                     if len(moved) != 0:
                         for announcement in moved[-1]:
                             self.reporter.add_event(announcement)
@@ -319,4 +320,5 @@ class AppHex(object):
                     self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
                     self.cursor.mapping = self.mapping
                     self.cursor.update_label(Position(i.org.pos.x, i.org.pos.y))
+
         self.tiles = self.make_map()
