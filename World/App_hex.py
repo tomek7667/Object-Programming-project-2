@@ -182,9 +182,6 @@ class AppHex(object):
                 if event.key == pg.K_l:
                     self.open_menu()
                 if event.key == pg.K_c:
-                    player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if
-                                   self.tiles.get_sprite(i).org_name == "Player"][0]
-                    print(player_cell)
                     self.capture_movement = not self.capture_movement
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -268,32 +265,34 @@ class AppHex(object):
                                 for announcement in cell[-1]:
                                     self.reporter.add_event(announcement)
                                 rem = cell[0]
-                                if not isinstance(rem, type(self.mapping.cells[rem.pos.y][rem.pos.x].org)):
-                                    self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
-                                    self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
-                                    try:
-                                        organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
-                                        organism_cells[self.organism_get_key(cell[1], organism_cells)].org = "null"
-                                    except:
-                                        self.check_player("check1")
-                                if issubclass(type(rem), Plant):  # case for plants
-                                    self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
-                                    try:
-                                        organism_cells[self.organism_get_key(rem, organism_cells)].org.alive = False
-                                        organism_cells[self.organism_get_key(rem, organism_cells)].org = "null"
-                                    except:
-                                        self.check_player("check2")
+                                if rem == "turtle reflection":
+                                    i.org.pos = old_position
+                                    self.mapping.cells[old_position.y][old_position.x].org = i.org
                                 else:
-                                    self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
-                                self.cursor.mapping = self.mapping
-                                self.cursor.update_label(Position(x, y))
-                                self.cursor.update_label(old_position)
-
+                                    print(f"aaaaaaaax={x} y={y}")
+                                    print(self.mapping.cells[y][x].empty())
+                                    if not isinstance(rem, type(self.mapping.cells[rem.pos.y][rem.pos.x].org)):
+                                        self.mapping.cells[rem.pos.y][rem.pos.x].org.alive = False
+                                        self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
+                                        try:
+                                            organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
+                                            organism_cells[self.organism_get_key(cell[1], organism_cells)].org = "null"
+                                        except:
+                                            self.check_player("check1")
+                                    if issubclass(type(rem), Plant):  # case for plants
+                                        self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
+                                        try:
+                                            organism_cells[self.organism_get_key(rem, organism_cells)].org.alive = False
+                                            organism_cells[self.organism_get_key(rem, organism_cells)].org = "null"
+                                        except:
+                                            self.check_player("check2")
+                                    else:
+                                        self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
                         else:
                             self.mapping.cells[y][x].org = i.org
-                            self.cursor.mapping = self.mapping
-                            self.cursor.update_label(Position(x, y))
-                            self.cursor.update_label(old_position)
+                        self.cursor.mapping = self.mapping
+                        self.cursor.update_label(Position(x, y))
+                        self.cursor.update_label(old_position)
                     else:
                         self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
                         self.cursor.mapping = self.mapping
