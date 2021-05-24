@@ -56,9 +56,10 @@ class Animal(Organism):
             result.append(self)
             result.append(attacker)
 
+        msg = "Fight between: "
         result.append([
-            f"Fight between: {attacker.pos} {attacker.id}: {attacker.name} => {self.pos} {self.id}: {self.name}",
-            f"{15*' '}{attacker.strength}{(len(attacker.name)-len(str(attacker.strength)))*' '} => {self.strength}"
+            f"{msg}{attacker.pos} {attacker.id}: {attacker.name} => {self.pos} {self.id}: {self.name}",
+            f"{len(msg) * ' '}{attacker.strength}{(len(attacker.name) - len(str(attacker.strength))) * ' '} => {self.strength}"
         ])
         return result
 

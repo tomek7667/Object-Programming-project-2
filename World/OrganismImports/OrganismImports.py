@@ -9,3 +9,4 @@ from Organisms.Organism import Organism
 from Organisms.Plant import Plant
 from Organisms.plants.Grass import Grass
 from Organisms.plants.Guarana import Guarana
+from Organisms.plants.Belladonna import Belladonna
