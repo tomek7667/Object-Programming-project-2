@@ -212,15 +212,6 @@ class AppHex(object):
                 return i
         print("This should never happen!")
 
-    def check_player(self, tried=0):
-        player = []
-        for asd in self.mapping.cells:
-            player.append([True for jd in asd if jd.org != "null" and jd.org.name == "Player"])
-        if [True] in player:
-            print(f"\t\tjest gracz {tried}")
-        else:
-            print(f"\t\tni ma gracza {tried}")
-
     def next_turn(self, key):
         # player_cell = [self.tiles.get_sprite(i) for i in range(len(self.tiles)) if self.tiles.get_sprite(
         # i).org_name == "Player"][0]
