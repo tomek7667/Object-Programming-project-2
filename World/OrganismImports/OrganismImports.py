@@ -8,3 +8,4 @@ from Organisms.Organism import Organism
 # plants
 from Organisms.Plant import Plant
 from Organisms.plants.Grass import Grass
+from Organisms.plants.Guarana import Guarana

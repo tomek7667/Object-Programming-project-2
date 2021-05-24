@@ -234,6 +234,7 @@ class AppHex(object):
         organism_cells.sort(key=lambda t: (t.org.initiative, t.org.age), reverse=True)
         for i in organism_cells:
             if i.org != "null" and i.org.alive:
+                i.org.age += 1
                 old_position = Position(i.org.pos.x, i.org.pos.y)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
                 moved = i.org.action(key, self.mapping)
