@@ -300,8 +300,24 @@ class AppHex(object):
                         self.cursor.update_label(i.org.pos)
                         self.cursor.update_label(old_position)
                 elif issubclass(type(i.org), Plant):
-                    print(f"wat {i.org},\n{moved}")
-                    if len(moved) != 0:
+                    if type(i.org) == Sosnowsky_Hogweed:
+                        print("SOSNOWSKI aaaa")
+                        if len(moved) != 0:
+                            for announcement in moved[-1]:
+                                self.reporter.add_event(announcement)
+                            for p in moved[0]:
+                                temp_org = self.mapping.cells[p.y][p.x].org
+                                if temp_org.name != "Cyber_sheep":
+                                    try:
+                                        organism_cells[self.organism_get_key(temp_org, organism_cells)].org.alive = False
+                                        organism_cells[self.organism_get_key(temp_org, organism_cells)].org = "null"
+                                    except:
+                                        self.check_player("Sosnowsky hex check3")
+                                    self.mapping.cells[p.y][p.x].org.alive = False
+                                    self.mapping.cells[p.y][p.x].org = "null"
+                            for c in moved[0]:
+                                self.cursor.update_label(c)
+                    elif len(moved) != 0:
                         for announcement in moved[-1]:
                             self.reporter.add_event(announcement)
                         for c in moved[0]:
