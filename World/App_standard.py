@@ -151,6 +151,15 @@ class AppStandard(object):
             sg.popup("You cannot do this. (Error: 203)")
             self.open_menu()
 
+    def check_player(self, tried=0):
+        player = []
+        for asd in self.mapping.cells:
+            player.append([True for jd in asd if jd.org != "null" and jd.org.name == "Player"])
+        if [True] in player:
+            print(f"\t\tjest gracz {tried}")
+        else:
+            print(f"\t\tni ma gracza {tried}")
+
     def add_organism(self, given=False):
         if not given:
             pos = pg.mouse.get_pos()
