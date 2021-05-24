@@ -151,8 +151,7 @@ class AppHex(object):
              sg.Button('Cancel'),
              sg.Button('New World')]]
                                   ).read(close=True)
-        if event == "Ok" and len(values["chosen_save"]) == 1 and len(values) != 0 and len(options) != 0 and options[
-            0] != "":
+        if event == "Ok" and len(values["chosen_save"]) == 1 and len(values) != 0 and len(options) != 0 and options[0] != "":
             self.mapping = MapGen(values["chosen_save"][0], self.mode)
             self.cursor = CursorHighlight(self.font, self.mapping)
             self.tiles = self.make_map()

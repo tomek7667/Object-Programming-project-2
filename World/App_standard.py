@@ -6,10 +6,11 @@ from World.Position import *
 from Technical.FileHandler import FileHandler
 from World.size import *
 import PySimpleGUI as sg
+from World.App_hex import AppHex
 from World.OrganismImports.OrganismImports import *
 
 
-class AppStandard(object):
+class AppStandard(AppHex):
     def __init__(self, FONT, mode):
         self.mode = mode
         self.scale = 32
@@ -38,23 +39,6 @@ class AppStandard(object):
                        start_y + offset * y)
                 Tile(pos, org, self.scale, tiles)
         return tiles
-
-    def update(self):
-        for sprite in self.tiles:
-            if sprite.layer != sprite.rect.bottom:
-                self.tiles.change_layer(sprite, sprite.rect.bottom)
-        self.tiles.update()
-        self.cursor.update(pg.mouse.get_pos(), self.tiles, self.screen_rect)
-
-    def render(self):
-        pg.display.set_mode(SCREEN_SIZE)  # resize
-        self.screen = pg.display.get_surface()
-        self.screen.fill(BACKGROUND)
-        self.tiles.draw(self.screen)
-        self.cursor.draw(self.screen)
-        self.reporter.display_help()
-        self.reporter.display_events()
-        pg.display.update()
 
     def event_loop(self):
         for event in pg.event.get():
