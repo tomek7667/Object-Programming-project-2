@@ -25,6 +25,8 @@ class AppStandard(AppHex):
         self.cursor = None
         self.reporter = Reporter(self.screen)
         self.file_handler = FileHandler()
+        self.cooldown = 0
+        self.ability_on = False
 
     def make_map(self):
         tiles = pg.sprite.LayeredUpdates()
