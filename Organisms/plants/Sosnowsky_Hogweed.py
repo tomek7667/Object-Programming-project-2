@@ -27,10 +27,11 @@ class Sosnowsky_Hogweed(Plant):
             if self.mapping.cells[self.pos.y+1][self.pos.x].org != "null" and not issubclass(type(self.mapping.cells[self.pos.y+1][self.pos.x].org), Plant):
                 positions.append(Position(self.pos.x, self.pos.y+1))
         if len(positions) != 0:
-            print("pozycje przed filtrem: ", positions, len(positions))
-            positions = [pos for pos in positions if self.mapping.cells[pos.y][pos.x].org != "null" and self.mapping.cells[pos.y][pos.x].org.name == "Cyber_sheep"]
-            print("pozycje po filtrze: ", positions, len(positions))
-            return [positions, [f"{self.name} killed some animals around it!"]]
+            positions = [pos for pos in positions if self.mapping.cells[pos.y][pos.x].org != "null" and self.mapping.cells[pos.y][pos.x].org.name != "Cyber_sheep"]
+            if len(positions) != 0:
+                return [positions, [f"{self.name} killed some animals around it!"]]
+            else:
+                return []
         return []
 
     def collision(self, attacker, old_pos, mapping):

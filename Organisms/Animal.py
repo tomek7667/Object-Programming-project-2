@@ -62,5 +62,3 @@ class Animal(Organism):
             f"{len(msg) * ' '}{attacker.strength}{(len(attacker.name) - len(str(attacker.strength))) * ' '} => {self.strength}"
         ])
         return result
-
-        # return attacker.strength < self.strength
