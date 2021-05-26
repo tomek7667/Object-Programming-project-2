@@ -45,6 +45,7 @@ HELP = [
     "[l] to load a map",
     "[s] to save a map",
     "[c] to turn movement capture",
+    "[r] to activate purification",
     "Control with your arrow keys",
 ]
 

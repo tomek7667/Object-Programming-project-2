@@ -21,6 +21,8 @@ class AppHex(object):
         self.reporter = Reporter(self.screen)
         self.file_handler = FileHandler()
         self.organisms = {}
+        self.cooldown = 0
+        self.ability_on = False
 
     def make_map(self):
         tiles = pg.sprite.LayeredUpdates()
@@ -169,6 +171,16 @@ class AppHex(object):
             sg.popup("You cannot do this. (Error: 203)")
             self.open_menu()
 
+    def activate_purification(self):
+        if not self.ability_on and self.cooldown <= 0:
+            self.cooldown = 5
+            self.ability_on = True
+            self.reporter.add_event("Purification will be activated in the next round!")
+            self.reporter.display_events()
+        else:
+            self.reporter.add_event("Purification is not done yet!")
+            self.reporter.display_events()
+
     def event_loop(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -183,6 +195,9 @@ class AppHex(object):
                     self.open_menu()
                 if event.key == pg.K_c:
                     self.capture_movement = not self.capture_movement
+                if event.key == pg.K_r:
+                    self.activate_purification()
+
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     # left click
@@ -191,7 +206,6 @@ class AppHex(object):
                     # scroll up
                     SCREEN_SIZE[0] -= 25
                     SCREEN_SIZE[1] -= 25
-
                 if event.button == 5:
                     # scroll down
                     SCREEN_SIZE[0] += 25
@@ -224,6 +238,7 @@ class AppHex(object):
         # i).org_name == "Player"][0]
         print("New Round")
         organism_cells = []
+        self.ability_on = self.cooldown >= 0
         for i in range(len(self.tiles)):
             if self.tiles.get_sprite(i).org_name != "null" and self.tiles.get_sprite(i).org.alive:
                 organism_cells.append(self.tiles.get_sprite(i))
@@ -233,8 +248,23 @@ class AppHex(object):
                 i.org.age += 1
                 old_position = Position(i.org.pos.x, i.org.pos.y)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
-                moved = i.org.action(key, self.mapping)
-                if issubclass(type(i.org), Animal):
+                moved = i.org.action([key, self.ability_on], self.mapping)
+                if type(i.org) == Player and self.ability_on and len(moved) != 0:
+                    for announcement in moved[-1]:
+                        self.reporter.add_event(announcement)
+                    for p in moved[0]:
+                        temp_org = self.mapping.cells[p.y][p.x].org
+                        try:
+                            organism_cells[self.organism_get_key(temp_org, organism_cells)].org.alive = False
+                            organism_cells[self.organism_get_key(temp_org, organism_cells)].org = "null"
+                        except:
+                            self.check_player("Sosnowsky hex check3")
+                        self.mapping.cells[p.y][p.x].org.alive = False
+                        self.mapping.cells[p.y][p.x].org = "null"
+                        self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
+                        self.cursor.mapping = self.mapping
+                        self.cursor.update_label(Position(i.org.pos.x, i.org.pos.y))
+                elif issubclass(type(i.org), Animal):
                     if moved:
                         y = i.org.pos.y
                         x = i.org.pos.x
@@ -281,14 +311,14 @@ class AppHex(object):
                                             organism_cells[self.organism_get_key(cell[1], organism_cells)].org.alive = False
                                             organism_cells[self.organism_get_key(cell[1], organism_cells)].org = "null"
                                         except:
-                                            self.check_player("check1")
+                                            self.check_player("check 1")
                                     if issubclass(type(rem), Plant):  # case for plants
                                         self.mapping.cells[rem.pos.y][rem.pos.x].org = "null"
                                         try:
                                             organism_cells[self.organism_get_key(rem, organism_cells)].org.alive = False
                                             organism_cells[self.organism_get_key(rem, organism_cells)].org = "null"
                                         except:
-                                            self.check_player("check2")
+                                            self.check_player("check 2")
                                     else:
                                         self.mapping.cells[rem.pos.y][rem.pos.x].org = rem
                         else:
@@ -338,3 +368,4 @@ class AppHex(object):
                     self.cursor.mapping = self.mapping
                     self.cursor.update_label(Position(i.org.pos.x, i.org.pos.y))
         self.tiles = self.make_map()
+        self.cooldown -= 1
