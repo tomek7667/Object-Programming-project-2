@@ -28,7 +28,7 @@ class Sosnowsky_Hogweed(Plant):
                 positions.append(Position(self.pos.x, self.pos.y+1))
         if len(positions) != 0:
             print("pozycje przed filtrem: ", positions, len(positions))
-            positions = [pos for pos in positions if self.mapping[pos.y][pos.x].org != "null" and self.mapping[pos.y][pos.x].org.name == "Cyber_sheep"]
+            positions = [pos for pos in positions if self.mapping.cells[pos.y][pos.x].org != "null" and self.mapping.cells[pos.y][pos.x].org.name == "Cyber_sheep"]
             print("pozycje po filtrze: ", positions, len(positions))
             return [positions, [f"{self.name} killed some animals around it!"]]
         return []

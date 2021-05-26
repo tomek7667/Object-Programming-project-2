@@ -7,6 +7,7 @@ from Organisms.animals.Sheep import Sheep
 from Organisms.animals.Turtle import Turtle
 from Organisms.animals.Fox import Fox
 from Organisms.animals.Antelope import Antelope
+from Organisms.animals.Cyber_sheep import Cyber_sheep
 
 # plants
 from Organisms.Plant import Plant

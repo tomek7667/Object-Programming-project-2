@@ -303,7 +303,6 @@ class AppHex(object):
                         self.cursor.update_label(old_position)
                 elif issubclass(type(i.org), Plant):
                     if type(i.org) == Sosnowsky_Hogweed:
-                        print("SOSNOWSKI aaaa")
                         if len(moved) != 0:
                             for announcement in moved[-1]:
                                 self.reporter.add_event(announcement)
