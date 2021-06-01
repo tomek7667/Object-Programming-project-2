@@ -2,6 +2,7 @@ from Organisms.Animal import *
 from constants import *
 from Organisms.Plant import Plant
 
+
 class Player(Animal):
     def action(self, key, mapping):
         ability_on = key[1]
