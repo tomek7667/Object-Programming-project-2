@@ -249,7 +249,7 @@ class AppHex(object):
                 old_position = Position(i.org.pos.x, i.org.pos.y)
                 self.mapping.cells[i.org.pos.y][i.org.pos.x].clear()
                 moved = i.org.action([key, self.ability_on], self.mapping)
-                if type(i.org) == Player and self.ability_on and len(moved) != 0:
+                if type(i.org) == Player and self.ability_on and moved and len(moved) != 0:
                     for announcement in moved[-1]:
                         self.reporter.add_event(announcement)
                     for p in moved[0]:
