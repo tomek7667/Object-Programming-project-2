@@ -18,7 +18,7 @@ class AppHex(object):
         self.tiles = None
         self.font = FONT
         self.cursor = None
-        self.reporter = Reporter(self.screen)
+        self.reporter = Reporter(self.screen, "Hex")
         self.file_handler = FileHandler()
         self.organisms = {}
         self.cooldown = 0

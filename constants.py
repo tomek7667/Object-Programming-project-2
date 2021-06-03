@@ -48,7 +48,7 @@ HELP = [
     "[c] to turn movement capture",
     "[r] to activate purification",
     "Control with your arrow keys",
-    "Move the map with [1, 2, 3, 4] or sroll"
+    "Move the map with [1, 2, 3, 4]"
 ]
 
 MARGIN = 32

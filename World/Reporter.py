@@ -2,13 +2,16 @@ from constants import *
 
 
 class Reporter:
-    def __init__(self, screen):
+    def __init__(self, screen, map_type):
         self.screen = screen
         self.prefix = "[REPORTER]"
         self.events = []
+        self.map_type = map_type
         self.font = pg.font.SysFont("consolas", 14)
 
     def display_help(self):
+        if self.map_type == "Standard":
+            HELP[-1] = "Use your scroll to resize the map"
         for i in range(len(HELP)):
             information = self.font.render(HELP[i], True, pg.Color("white"))
             self.screen.blit(information, (14, 14 * i + 14))

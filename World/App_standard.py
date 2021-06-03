@@ -23,7 +23,7 @@ class AppStandard(AppHex):
         self.tiles = None  # self.make_map()
         self.font = FONT
         self.cursor = None
-        self.reporter = Reporter(self.screen)
+        self.reporter = Reporter(self.screen, "Standard")
         self.file_handler = FileHandler()
         self.cooldown = 0
         self.ability_on = False
@@ -32,7 +32,7 @@ class AppStandard(AppHex):
         tiles = pg.sprite.LayeredUpdates()
         start_x, start_y = self.screen_rect.midtop
         start_x -= 300
-        start_y += self.scale + 16
+        start_y += self.scale + 32
         offset = self.scale
         for y in range(get_height()):
             for x in range(get_width()):
