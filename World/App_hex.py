@@ -70,6 +70,8 @@ class AppHex(object):
         if event == "Ok":
             self.file_handler.temp_file_init(values)
             self.mapping = MapGen("temp_file", self.mode)
+            self.cooldown = self.mapping.cooldown
+            self.ability_on = self.mapping.active
             self.cursor = CursorHighlight(self.font, self.mapping)
             self.tiles = self.make_map()
             self.file_handler.temp_file_remove()
@@ -156,6 +158,8 @@ class AppHex(object):
                                   ).read(close=True)
         if event == "Ok" and len(values["chosen_save"]) == 1 and len(values) != 0 and len(options) != 0 and options[0] != "":
             self.mapping = MapGen(values["chosen_save"][0], self.mode)
+            self.cooldown = self.mapping.cooldown
+            self.ability_on = self.mapping.active
             self.cursor = CursorHighlight(self.font, self.mapping)
             self.tiles = self.make_map()
         elif event == "New World":
@@ -173,6 +177,7 @@ class AppHex(object):
             self.open_menu()
 
     def activate_purification(self):
+        self.reporter.clear()
         if not self.ability_on and self.cooldown <= 0:
             self.cooldown = 5
             self.ability_on = True
@@ -191,7 +196,7 @@ class AppHex(object):
                     self.reporter.clear()
                     self.next_turn(event.key)
                 if event.key == pg.K_s:
-                    self.file_handler.save_file(self.tiles, self.mapping.seed)
+                    self.file_handler.save_file(self.tiles, self.mapping.seed, self.cooldown, self.ability_on)
                 if event.key == pg.K_l:
                     self.open_menu()
                 if event.key == pg.K_c:

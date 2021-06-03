@@ -1,17 +1,21 @@
 from World.outline_render import *
 from World.OrganismImports.OrganismImports import *
 
+
 class MapGen(object):
     def __init__(self, file, map_type):
         self.map_type = map_type
         self.file = file
         self.seed = None
         self.ids_on_map = []
+        self.cooldown = 0
+        self.active = False
         self.cells = self.import_map()
 
     def __str__(self):
         result = f"MapGenObject, map type: {self.map_type}, Save: {self.file}\n"
         result += f"Seed: {self.seed}, Cells:\n"
+        result += f"Ability cooldown: {self.cooldown}\nAbility active: {self.active}\n"
         for row in self.cells:
             for column in row:
                 result += str(column)
@@ -28,6 +32,8 @@ class MapGen(object):
                     if line[-1] == '\n':
                         line = line[:-1]
                     lines.append(line)
+        self.cooldown = eval(lines.pop(0).split("Ability_cooldown: ")[1])
+        self.active = eval(lines.pop(0).split("Active: ")[1])
         seed = lines.pop(0).split("Seed: ")[1]
         random.seed(int(seed))
         self.seed = seed

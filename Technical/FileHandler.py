@@ -10,7 +10,7 @@ class FileHandler:
         self.prefix = "[FileHandler]"
         self.debug = debug
 
-    def save_file(self, tiles, seed):
+    def save_file(self, tiles, seed, cooldown, active):
         if self.debug:
             print(f"{self.prefix} {tiles}")
         event, values = sg.Window('Choose an option', [
@@ -22,6 +22,7 @@ class FileHandler:
         if event == "Ok":
             if len(values["filename"]) > 0:
                 with open("states/"+values["filename"]+".save", "w") as f:
+                    f.write(f"Ability_cooldown: {cooldown}\nActive: {active}\n")
                     f.write(f"Seed: {seed}\n")
                     f.write(f"{get_width()} {get_height()}\n")
                     for tile in tiles:
@@ -45,6 +46,7 @@ class FileHandler:
         else:
             measurement.append(int(random.random()*(10**10)))
         with open("states/temp_file", 'w') as f:
+            f.write(f"Ability_cooldown: 0\nActive: False\n")
             f.write(f"Seed: {measurement[2]}\n")
             f.write(f"{measurement[0]} {measurement[1]}\n")
 
