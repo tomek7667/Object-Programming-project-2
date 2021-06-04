@@ -5,8 +5,10 @@ from Organisms.Plant import Plant
 
 class Player(Animal):
     def action(self, key, mapping):
+        print(key)
         ability_on = key[1]
         key = key[0]
+        print("is ability passed on? : ", ability_on)
         if not ability_on:
             if key == pg.K_LEFT:
                 if self.pos.x-1 >= 0:

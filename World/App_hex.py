@@ -180,7 +180,9 @@ class AppHex(object):
         self.reporter.clear()
         if not self.ability_on and self.cooldown <= 0:
             self.cooldown = 5
+            self.mapping.cooldown = 5
             self.ability_on = True
+            self.mapping.active = True
             self.reporter.add_event("Purification will be activated in the next round!")
             self.reporter.display_events()
         else:
@@ -246,7 +248,9 @@ class AppHex(object):
 
     def next_turn(self, key):
         organism_cells = []
-        self.ability_on = self.cooldown >= 0
+        self.ability_on = self.cooldown > 0
+        self.mapping.active = self.cooldown > 0
+        self.mapping.cooldown = self.cooldown
         for i in range(len(self.tiles)):
             if self.tiles.get_sprite(i).org_name != "null" and self.tiles.get_sprite(i).org.alive:
                 organism_cells.append(self.tiles.get_sprite(i))
@@ -267,14 +271,15 @@ class AppHex(object):
                             organism_cells[self.organism_get_key(temp_org, organism_cells)].org = "null"
                         except:
                             pass
-                            # self.check_player("Sosnowsky hex check3")
                         self.mapping.cells[p.y][p.x].org.alive = False
                         self.mapping.cells[p.y][p.x].org = "null"
                         self.mapping.cells[i.org.pos.y][i.org.pos.x].org = i.org
                         self.cursor.mapping = self.mapping
                         self.cursor.update_label(Position(i.org.pos.x, i.org.pos.y))
                 elif issubclass(type(i.org), Animal):
+                    print(moved)
                     if moved:
+                        print("chek2")
                         y = i.org.pos.y
                         x = i.org.pos.x
                         if self.capture_movement:
